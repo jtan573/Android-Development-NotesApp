@@ -32,10 +32,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val list = remember {
-                mutableStateListOf(Task(title = "Hello"), Task(title = "World"))
-                // mutableStateListOf<Task>()
+                mutableStateListOf(
+                    Task(title = "Task 1", description = "Description of Task 1"),
+                    Task(title = "Task 2", description = "Description of Task 2")
+                )
             }
-
             TodoListTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
