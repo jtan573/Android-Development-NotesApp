@@ -10,3 +10,8 @@ data class Task(
     val description: String,
     var isChecked: MutableState<Boolean> = mutableStateOf(false)
 )
+
+sealed class Screen(val route:String) {
+    object HomeView : Screen("home_view")
+    object NewTaskView : Screen("new_task_view")
+}
