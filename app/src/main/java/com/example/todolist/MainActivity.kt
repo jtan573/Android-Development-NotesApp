@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -40,11 +41,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.todolist.ui.theme.TodoListTheme
 import androidx.compose.material.*
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.todolist.ui.theme.Screen
+import java.time.format.TextStyle
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            Navigation()
             val list = remember {
                 mutableStateListOf(
                     Task(title = "Task 1", description = "Description of Task 1"),
@@ -54,7 +70,7 @@ class MainActivity : ComponentActivity() {
             TodoListTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    MainScreen(list = list)
+                    HomeView(list = list)
                 }
             }
         }
@@ -62,16 +78,53 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen (list: MutableList<Task>, modifier: Modifier = Modifier) {
-    Column (modifier = modifier.fillMaxSize()) {
-        TextInputView(list = list)
+fun Navigation() {
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = Screen.HomeView.route) {
+        composable(
+            route = Screen.HomeView.route,
+            arguments = listOf(
+                navArgument(name = "listOfTasks") {
+                    type = mutableStateListOf<Task>(),
+
+                }
+            )
+        ) {
+            HomeView(list = list, navController = navController)
+        }
+        composable(
+            route = Screen.NewTaskView.route,
+            arguments = list
+        )
+    }
+}
+
+@Composable
+fun HomeView (list: MutableList<Task>, navController: NavController) {
+    Column (
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Text(
+            text = "My TODO List",
+            modifier = Modifier.padding(10.dp),
+            fontSize = 25.sp,
+            fontWeight = FontWeight.Bold
+        )
         ListView(list = list)
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedButton(
+            modifier = Modifier.align(alignment = Alignment.End),
+            onClick = { navController.navigate(Screen.HomeView.route) }
+        ) {
+            Text(text = "Add task")
+        }
+        NewTaskView(list = list)
     }
 }
 
 // Add New Task
 @Composable
-fun TextInputView(list: MutableList<Task>) {
+fun NewTaskView(list: MutableList<Task>) {
     var titleInput by rememberSaveable { mutableStateOf(value = "") }
     var descInput by rememberSaveable { mutableStateOf(value = "") }
     Column(
@@ -104,13 +157,13 @@ fun TextInputView(list: MutableList<Task>) {
 fun ListView(list: MutableList<Task>) {
     LazyColumn {
         items(list) { task ->
-            RowView(task, list)
+            TaskRow(task, list)
         }
     }
 }
 
 @Composable
-fun RowView(task: Task, list: MutableList<Task>) {
+fun TaskRow(task: Task, list: MutableList<Task>) {
     Row (modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     )
@@ -123,12 +176,13 @@ fun RowView(task: Task, list: MutableList<Task>) {
             Text(text = task.description)
         }
         Spacer(modifier = Modifier.weight(1f))
-        Button(
+        OutlinedButton(
             modifier = Modifier.absolutePadding(right = 5.dp),
             onClick = { list.removeAt(list.indexOfFirst { it.title == task.title }) },
             shape = CircleShape
         ) {
-            Icons.Default.Delete
+            // Icon(Icons.Default.Delete)
+            Text(text = "Delete")
         }
     }
 }
