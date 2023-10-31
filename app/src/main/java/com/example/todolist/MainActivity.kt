@@ -52,6 +52,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgs
 import androidx.navigation.navArgument
 import com.example.todolist.ui.theme.Screen
 import java.time.format.TextStyle
@@ -60,7 +61,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Navigation()
             val list = remember {
                 mutableStateListOf(
                     Task(title = "Task 1", description = "Description of Task 1"),
@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
             TodoListTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    HomeView(list = list)
+                    Navigation(list = list)
                 }
             }
         }
@@ -78,24 +78,16 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Navigation() {
+fun Navigation(list: MutableList<Task>) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.HomeView.route) {
-        composable(
-            route = Screen.HomeView.route,
-            arguments = listOf(
-                navArgument(name = "listOfTasks") {
-                    type = mutableStateListOf<Task>(),
-
-                }
-            )
-        ) {
+        composable (route = Screen.HomeView.route) {
             HomeView(list = list, navController = navController)
         }
-        composable(
-            route = Screen.NewTaskView.route,
-            arguments = list
-        )
+        composable(route = Screen.NewTaskView.route)
+        {
+            NewTaskView(list = list, navController = navController)
+        }
     }
 }
 
@@ -114,17 +106,16 @@ fun HomeView (list: MutableList<Task>, navController: NavController) {
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedButton(
             modifier = Modifier.align(alignment = Alignment.End),
-            onClick = { navController.navigate(Screen.HomeView.route) }
+            onClick = { navController.navigate(Screen.NewTaskView.route) }
         ) {
             Text(text = "Add task")
         }
-        NewTaskView(list = list)
     }
 }
 
 // Add New Task
 @Composable
-fun NewTaskView(list: MutableList<Task>) {
+fun NewTaskView(list: MutableList<Task>, navController: NavController) {
     var titleInput by rememberSaveable { mutableStateOf(value = "") }
     var descInput by rememberSaveable { mutableStateOf(value = "") }
     Column(
@@ -141,12 +132,13 @@ fun NewTaskView(list: MutableList<Task>) {
         OutlinedTextField(
             value = descInput,
             onValueChange = { descInput = it },
-            label = { Text(text = "Description")}
+            label = { Text(text = "Description") }
         )
         Button(onClick = {
             list.add(Task(title = titleInput, description = descInput))
             titleInput = ""
             descInput = ""
+            navController.navigate(Screen.HomeView.route)
         }) {
             Text(text = "ADD TO LIST")
         }
