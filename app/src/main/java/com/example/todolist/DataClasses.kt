@@ -14,4 +14,15 @@ data class Task(
 sealed class Screen(val route:String) {
     object HomeView : Screen("home_view")
     object NewTaskView : Screen("new_task_view")
+    object TaskView : Screen("task_view")
+    object EditTaskView : Screen("edit_task_view")
+
+    fun withArgs(vararg args: String): String {
+        return buildString {
+            append(route)
+            args.forEach { arg ->
+                append("/$arg")
+            }
+        }
+    }
 }

@@ -14,7 +14,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.example.todolist.ui.theme.TodoListTheme
 import com.example.todolist.appPages.Navigation
-import com.example.todolist.appPages.TopNavBar
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
