@@ -1,6 +1,8 @@
 package com.example.todolist.appPages
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,12 +30,19 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.todolist.Note
 import com.example.todolist.Screen
+import com.example.todolist.descCharMax
+import com.example.todolist.isDescError
+import com.example.todolist.isTitleError
+import com.example.todolist.titleCharMax
+import com.example.todolist.titleCharMin
 
 // Add New Task
 @Composable
 fun NewNoteView(list: MutableList<Note>, navController: NavController) {
     var titleInput by rememberSaveable { mutableStateOf(value = "") }
     var descInput by rememberSaveable { mutableStateOf(value = "") }
+    var isErrorInTitle by rememberSaveable { mutableStateOf(false) }
+    var isErrorInDesc by rememberSaveable { mutableStateOf(false) }
 
     Scaffold (
         modifier = Modifier.fillMaxSize(),
@@ -48,12 +57,13 @@ fun NewNoteView(list: MutableList<Note>, navController: NavController) {
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            navController.navigate(Screen.NoteView.route)
+                            navController.navigate(Screen.HomeView.route)
                         }
                     ) {
                         Icon(
                             Icons.Default.ArrowBack,
-                            contentDescription = "back_icon"
+                            contentDescription = "back_icon",
+                            tint = Color.White
                         )
                     }
                 },
@@ -67,36 +77,70 @@ fun NewNoteView(list: MutableList<Note>, navController: NavController) {
                 .fillMaxWidth()
                 .padding(paddingValues)
         ) {
-            OutlinedTextField(
+            Spacer(modifier = Modifier.height(5.dp))
+            OutlinedTextField (
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 10.dp, end = 10.dp),
                 value = titleInput,
-                onValueChange = { titleInput = it },
-                label = { Text("Title") }
+                onValueChange =
+                {
+                    titleInput = it
+                    isErrorInTitle = isTitleError(titleInput, titleCharMax, titleCharMin)
+                },
+                label = { Text("Title") },
+                supportingText = {
+                    Column {
+                        Text(text = "Count: ${titleInput.length}/$titleCharMax (Min 3 characters)")
+                        if (isErrorInTitle) {
+                            Text(text = "Please enter a valid title.")
+                        }
+                    }
+                }
             )
+            Spacer(modifier = Modifier.height(15.dp))
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 10.dp, end = 10.dp),
                 value = descInput,
-                onValueChange = { descInput = it },
-                label = { Text(text = "Description") }
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Add error checking for notes input
-
-            Button(
-                modifier = Modifier.padding(start = 10.dp, end = 10.dp),
-                onClick = {
-                    list.add(Note(title = titleInput, description = descInput))
-                    titleInput = ""
-                    descInput = ""
-                    navController.navigate(Screen.HomeView.route)
+                onValueChange =
+                {
+                    descInput = it
+                    isErrorInDesc = isDescError(descInput, descCharMax)
+                },
+                label = { Text(text = "Description") },
+                supportingText = {
+                    Column {
+                        Text(text = "Count: ${descInput.length}/$descCharMax")
+                        if (isErrorInDesc) {
+                            Text(text = "Please enter a valid description.")
+                        }
+                    }
                 }
+            )
+            Spacer(modifier = Modifier.height(15.dp))
+            Row (
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.Center
             ) {
-                Text(text = "ADD TO LIST")
+                Button(
+                    modifier = Modifier.padding(start = 10.dp, end = 10.dp),
+                    onClick = {
+                        if (
+                            (titleInput.length > titleCharMin) and
+                            (titleInput.length <= titleCharMax) and
+                            (descInput.length <= descCharMax)
+                        ) {
+                            list.add(Note(title = titleInput, description = descInput))
+                            titleInput = ""
+                            descInput = ""
+                            navController.navigate(Screen.HomeView.route)
+                        }
+                    }
+                ) {
+                    Text(text = "ADD TO LIST")
+                }
             }
         }
     }

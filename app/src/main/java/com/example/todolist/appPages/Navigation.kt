@@ -18,12 +18,12 @@ fun Navigation (list: MutableList<Note>) {
         composable (route = Screen.HomeView.route) {
             HomeView(list = list, navController = navController)
         }
-        // Create New Task page
+        // Create New Note page
         composable(route = Screen.NewNoteView.route)
         {
             NewNoteView(list = list, navController = navController)
         }
-        // View Task Details page
+        // View Note Details page
         composable(
             route = Screen.NoteView.route + "/{noteId}",
             arguments = listOf(
@@ -39,7 +39,7 @@ fun Navigation (list: MutableList<Note>) {
                 navController = navController
             )
         }
-        // Edit Task Details page
+        // Edit Note Details page
         composable(
             route = Screen.EditNoteView.route + "/{noteId}",
             arguments = listOf(
@@ -49,7 +49,7 @@ fun Navigation (list: MutableList<Note>) {
                 }
             )
         ) { entry ->
-            NoteView(
+            EditNoteView(
                 noteId = entry.arguments?.getString("noteId"),
                 list = list,
                 navController = navController

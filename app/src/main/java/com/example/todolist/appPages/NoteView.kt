@@ -1,8 +1,11 @@
 package com.example.todolist.appPages
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -10,6 +13,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,7 +57,33 @@ fun NoteView(noteId: String?, list: MutableList<Note>, navController: NavControl
                     ) {
                         Icon(
                             Icons.Default.ArrowBack,
-                            contentDescription = "back_icon"
+                            contentDescription = "back_icon",
+                            tint = Color.White
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            navController.navigate(Screen.EditNoteView.withArgs("$noteId"))
+                        }
+                    ) {
+                        Icon(
+                            Icons.Default.Create,
+                            contentDescription = "edit_icon",
+                            tint = Color.White
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            list.remove(targetNote)
+                            navController.navigate(Screen.HomeView.route)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete",
+                            tint = Color.White
                         )
                     }
                 },
@@ -76,12 +107,7 @@ fun NoteView(noteId: String?, list: MutableList<Note>, navController: NavControl
                 modifier = Modifier.padding(start = 10.dp),
                 text = "$noteDesc"
             )
-            Button(
-                modifier = Modifier.padding(8.dp),
-                onClick = { navController.navigate(Screen.EditNoteView.route) }
-            ) {
-                Text(text = "EDIT NOTE")
-            }
+            Spacer(modifier = Modifier.height(15.dp))
         }
     }
 }

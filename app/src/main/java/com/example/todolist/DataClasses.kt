@@ -1,13 +1,17 @@
 package com.example.todolist
 
+import android.content.Context
+import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.res.stringResource
 import java.util.UUID
 
 data class Note(
     val id: String = UUID.randomUUID().toString(),
-    val title: String,
-    val description: String,
+    var title: String,
+    var description: String,
     var isChecked: MutableState<Boolean> = mutableStateOf(false)
 )
 

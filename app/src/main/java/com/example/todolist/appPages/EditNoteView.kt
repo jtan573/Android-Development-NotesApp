@@ -1,6 +1,10 @@
 package com.example.todolist.appPages
 
+import android.graphics.Paint.Align
+import android.text.Layout.Alignment
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +32,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.todolist.Note
 import com.example.todolist.Screen
+import com.example.todolist.descCharMax
+import com.example.todolist.isDescError
+import com.example.todolist.isTitleError
+import com.example.todolist.titleCharMax
+import com.example.todolist.titleCharMin
 
 @Composable
 fun EditNoteView(noteId: String?, list: MutableList<Note>, navController: NavController) {
@@ -35,26 +44,31 @@ fun EditNoteView(noteId: String?, list: MutableList<Note>, navController: NavCon
     var noteTitle by rememberSaveable { mutableStateOf(value = targetNote?.title) }
     var noteDesc by rememberSaveable { mutableStateOf(value = targetNote?.description) }
 
+    var isErrorInTitle by rememberSaveable { mutableStateOf(false) }
+    var isErrorInDesc by rememberSaveable { mutableStateOf(false) }
+
     Scaffold (
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(
-                    text = "Edit Current Note",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
+                title = {
+                    Text(
+                        text = "Edit Current Note",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
                 },
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            navController.navigate(Screen.NoteView.route)
+                            navController.navigate(Screen.NoteView.withArgs("$noteId"))
                         }
                     ) {
                         Icon(
                             Icons.Default.ArrowBack,
-                            contentDescription = "back_icon"
+                            contentDescription = "back_icon",
+                            tint = Color.White
                         )
                     }
                 },
@@ -68,36 +82,71 @@ fun EditNoteView(noteId: String?, list: MutableList<Note>, navController: NavCon
                 .fillMaxWidth()
                 .padding(paddingValues)
         ) {
+            Spacer(modifier = Modifier.height(5.dp))
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 10.dp, end = 10.dp),
                 value = "$noteTitle",
-                onValueChange = { noteTitle = it },
-                label = { Text("Title") }
+                onValueChange =
+                {
+                    noteTitle = it
+                    isErrorInTitle = isTitleError(it, titleCharMax, titleCharMin)
+                },
+                label = { Text("Title") },
+                supportingText = {
+                    Column {
+                        Text(text = "Count: ${"$noteTitle".length}/$titleCharMax (Min 3 characters)")
+                        if (isErrorInTitle) {
+                            Text(text = "Please enter a valid title.")
+                        }
+                    }
+                }
             )
+            Spacer(modifier = Modifier.height(15.dp))
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 10.dp, end = 10.dp),
                 value = "$noteDesc",
-                onValueChange = { noteDesc = it },
-                label = { Text(text = "Description") }
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Add error checking for notes input
-
-            Button(
-                modifier = Modifier.padding(start = 10.dp, end = 10.dp),
-                onClick = {
-                    list.add(Note(title = "$noteTitle", description = "$noteDesc"))
-                    noteTitle = ""
-                    noteDesc = ""
-                    navController.navigate(Screen.HomeView.route)
+                onValueChange =
+                {
+                    noteDesc = it
+                    isErrorInDesc = isDescError(it, descCharMax)
+                },
+                label = { Text(text = "Description") },
+                supportingText = {
+                    Column {
+                        Text(text = "Count: ${"$noteDesc".length}/$descCharMax")
+                        if (isErrorInDesc) {
+                            Text(text = "Please enter a valid description.")
+                        }
+                    }
                 }
-            ) {
-                Text(text = "ADD TO LIST")
+            )
+            Spacer(modifier = Modifier.height(15.dp))
+            Row (
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.Center
+            )
+            {
+                Button(
+                    modifier = Modifier.padding(start = 10.dp, end = 10.dp),
+                    onClick =
+                    { if (
+                        ("$noteTitle".length > titleCharMin) and
+                        ("$noteTitle".length <= titleCharMax) and
+                        ("$noteDesc".length <= descCharMax)
+                    ) {
+                        targetNote?.title = "$noteTitle"
+                        targetNote?.description = "$noteDesc"
+                        noteTitle = ""
+                        noteDesc = ""
+                        navController.navigate(Screen.NoteView.withArgs("$noteId"))
+                    } }
+                ) {
+                    Text(text = "CONFIRM CHANGES")
+                }
             }
         }
     }
