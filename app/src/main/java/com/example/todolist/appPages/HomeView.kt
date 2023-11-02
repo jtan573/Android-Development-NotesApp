@@ -31,7 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.todolist.Task
+import com.example.todolist.Note
 import com.example.todolist.Screen
 import com.example.todolist.ui.theme.Purple40
 import com.example.todolist.ui.theme.Purple80
@@ -39,7 +39,7 @@ import com.example.todolist.ui.theme.PurpleGrey40
 import com.example.todolist.ui.theme.PurpleGrey80
 
 @Composable
-fun HomeView (list: MutableList<Task>, navController: NavController) {
+fun HomeView (list: MutableList<Note>, navController: NavController) {
     Scaffold (
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -68,41 +68,39 @@ fun HomeView (list: MutableList<Task>, navController: NavController) {
             Spacer(modifier = Modifier.padding(top = 8.dp))
             Button(
                 modifier = Modifier.padding(8.dp),
-                onClick = { navController.navigate(Screen.NewTaskView.route) }
+                onClick = { navController.navigate(Screen.NewNoteView.route) }
             ) {
-                Text(text = "ADD TASK")
+                Text(text = "ADD NOTE")
             }
         }
     }
 }
 
 @Composable
-fun ListView(list: MutableList<Task>, navController: NavController) {
+fun ListView(list: MutableList<Note>, navController: NavController) {
     LazyColumn {
-        items(list) { task ->
-            TaskRow(task, list, navController)
+        items(list) { note ->
+            TaskRow(note, list, navController)
         }
     }
 }
 
 @Composable
-fun TaskRow(task: Task, list: MutableList<Task>, navController: NavController) {
+fun TaskRow(note: Note, list: MutableList<Note>, navController: NavController) {
     Row (modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     )
     {
-        Checkbox(checked = task.isChecked.value,
-            onCheckedChange = {task.isChecked.value = !task.isChecked.value}
-        )
         TextButton(
+            modifier = Modifier.padding(start = 5.dp),
             onClick = {
                 navController.navigate(
-                    Screen.TaskView.withArgs(task.title, task.description)
+                    Screen.NoteView.withArgs(note.id)
                 )
             }
         ) {
             Text(
-                text = task.title,
+                text = note.title,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
             )
@@ -110,7 +108,7 @@ fun TaskRow(task: Task, list: MutableList<Task>, navController: NavController) {
         Spacer(modifier = Modifier.weight(1f))
         IconButton(
             modifier = Modifier.absolutePadding(right = 5.dp),
-            onClick = { list.removeAt(list.indexOfFirst { it.title == task.title }) }
+            onClick = { list.removeAt(list.indexOfFirst { it.title == note.title }) }
         ) {
             Icon(
                 imageVector = Icons.Default.Delete,

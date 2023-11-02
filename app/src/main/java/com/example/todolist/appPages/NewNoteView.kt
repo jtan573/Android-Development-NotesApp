@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ButtonColors
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -28,12 +26,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.todolist.Task
+import com.example.todolist.Note
 import com.example.todolist.Screen
 
 // Add New Task
 @Composable
-fun NewTaskView(list: MutableList<Task>, navController: NavController) {
+fun NewNoteView(list: MutableList<Note>, navController: NavController) {
     var titleInput by rememberSaveable { mutableStateOf(value = "") }
     var descInput by rememberSaveable { mutableStateOf(value = "") }
 
@@ -42,7 +40,7 @@ fun NewTaskView(list: MutableList<Task>, navController: NavController) {
         topBar = {
             TopAppBar(
                 title = { Text(
-                    text = "Create New Task",
+                    text = "Create New Note",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -50,7 +48,7 @@ fun NewTaskView(list: MutableList<Task>, navController: NavController) {
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            navController.navigate(Screen.TaskView.route)
+                            navController.navigate(Screen.NoteView.route)
                         }
                     ) {
                         Icon(
@@ -92,7 +90,7 @@ fun NewTaskView(list: MutableList<Task>, navController: NavController) {
             Button(
                 modifier = Modifier.padding(start = 10.dp, end = 10.dp),
                 onClick = {
-                    list.add(Task(title = titleInput, description = descInput))
+                    list.add(Note(title = titleInput, description = descInput))
                     titleInput = ""
                     descInput = ""
                     navController.navigate(Screen.HomeView.route)

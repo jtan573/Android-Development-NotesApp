@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import java.util.UUID
 
-data class Task(
+data class Note(
     val id: String = UUID.randomUUID().toString(),
     val title: String,
     val description: String,
@@ -13,9 +13,9 @@ data class Task(
 
 sealed class Screen(val route:String) {
     object HomeView : Screen("home_view")
-    object NewTaskView : Screen("new_task_view")
-    object TaskView : Screen("task_view")
-    object EditTaskView : Screen("edit_task_view")
+    object NewNoteView : Screen("new_note_view")
+    object NoteView : Screen("note_view")
+    object EditNoteView : Screen("edit_note_view")
 
     fun withArgs(vararg args: String): String {
         return buildString {

@@ -21,8 +21,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val list = remember {
                 mutableStateListOf(
-                    Task(title = "Task 1", description = "Description of Task 1"),
-                    Task(title = "Task 2", description = "Description of Task 2")
+                    Note(title = "Note 1", description = "Description of Note 1"),
+                    Note(title = "Note 2", description = "Description of Note 2")
                 )
             }
             TodoListTheme {

@@ -7,11 +7,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.todolist.Task
+import com.example.todolist.Note
 import com.example.todolist.Screen
 
 @Composable
-fun Navigation (list: MutableList<Task>) {
+fun Navigation (list: MutableList<Note>) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.HomeView.route) {
         // Home page
@@ -19,29 +19,39 @@ fun Navigation (list: MutableList<Task>) {
             HomeView(list = list, navController = navController)
         }
         // Create New Task page
-        composable(route = Screen.NewTaskView.route)
+        composable(route = Screen.NewNoteView.route)
         {
-            NewTaskView(list = list, navController = navController)
+            NewNoteView(list = list, navController = navController)
         }
         // View Task Details page
         composable(
-            route = Screen.TaskView.route + "/{title}/{description}",
+            route = Screen.NoteView.route + "/{noteId}",
             arguments = listOf(
-                navArgument("title") {
+                navArgument("noteId") {
                     type = NavType.StringType
-                    defaultValue = "Untitled Task"
-                    nullable = true
-                },
-                navArgument("description") {
-                    type = NavType.StringType
-                    defaultValue = "No Description"
                     nullable = true
                 }
             )
         ) {entry ->
-            TaskView(
-                title = entry.arguments?.getString("title"),
-                description = entry.arguments?.getString("description"),
+            NoteView(
+                noteId = entry.arguments?.getString("noteId"),
+                list = list,
+                navController = navController
+            )
+        }
+        // Edit Task Details page
+        composable(
+            route = Screen.EditNoteView.route + "/{noteId}",
+            arguments = listOf(
+                navArgument("noteId") {
+                    type = NavType.StringType
+                    nullable = true
+                }
+            )
+        ) { entry ->
+            NoteView(
+                noteId = entry.arguments?.getString("noteId"),
+                list = list,
                 navController = navController
             )
         }
