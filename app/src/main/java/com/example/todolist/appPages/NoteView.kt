@@ -1,6 +1,5 @@
 package com.example.todolist.appPages
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,13 +14,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -33,18 +30,19 @@ import com.example.todolist.Note
 
 @Composable
 fun NoteView(noteId: String?, list: MutableList<Note>, navController: NavController) {
-    var targetNote: Note? = list.find { it.id == "$noteId" }
-    var noteTitle by rememberSaveable { mutableStateOf(value = targetNote?.title) }
-    var noteDesc by rememberSaveable { mutableStateOf(value = targetNote?.description) }
+    val targetNote: Note? = list.find { it.id == "$noteId" }
+    val noteTitle by rememberSaveable { mutableStateOf(value = targetNote?.title) }
+    val noteDesc by rememberSaveable { mutableStateOf(value = targetNote?.description) }
 
     Scaffold (
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
+                modifier = Modifier.height(70.dp),
                 title = {
                     Text(modifier = Modifier.padding(10.dp),
                         text = "$noteTitle",
-                        fontSize = 20.sp,
+                        fontSize = 25.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
@@ -105,7 +103,8 @@ fun NoteView(noteId: String?, list: MutableList<Note>, navController: NavControl
             }
             Text(
                 modifier = Modifier.padding(start = 10.dp),
-                text = "$noteDesc"
+                text = "$noteDesc",
+                fontSize = 18.sp
             )
             Spacer(modifier = Modifier.height(15.dp))
         }

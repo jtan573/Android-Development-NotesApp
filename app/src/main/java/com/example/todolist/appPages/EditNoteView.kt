@@ -1,7 +1,5 @@
 package com.example.todolist.appPages
 
-import android.graphics.Paint.Align
-import android.text.Layout.Alignment
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,7 +38,7 @@ import com.example.todolist.titleCharMin
 
 @Composable
 fun EditNoteView(noteId: String?, list: MutableList<Note>, navController: NavController) {
-    var targetNote: Note? = list.find { it.id == "$noteId" }
+    val targetNote: Note? = list.find { it.id == "$noteId" }
     var noteTitle by rememberSaveable { mutableStateOf(value = targetNote?.title) }
     var noteDesc by rememberSaveable { mutableStateOf(value = targetNote?.description) }
 
@@ -51,10 +49,11 @@ fun EditNoteView(noteId: String?, list: MutableList<Note>, navController: NavCon
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
+                modifier = Modifier.height(70.dp),
                 title = {
                     Text(
                         text = "Edit Current Note",
-                        fontSize = 20.sp,
+                        fontSize = 25.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
@@ -101,7 +100,8 @@ fun EditNoteView(noteId: String?, list: MutableList<Note>, navController: NavCon
                             Text(text = "Please enter a valid title.")
                         }
                     }
-                }
+                },
+                isError = isErrorInTitle
             )
             Spacer(modifier = Modifier.height(15.dp))
             OutlinedTextField(
@@ -122,7 +122,8 @@ fun EditNoteView(noteId: String?, list: MutableList<Note>, navController: NavCon
                             Text(text = "Please enter a valid description.")
                         }
                     }
-                }
+                },
+                isError = isErrorInDesc
             )
             Spacer(modifier = Modifier.height(15.dp))
             Row (

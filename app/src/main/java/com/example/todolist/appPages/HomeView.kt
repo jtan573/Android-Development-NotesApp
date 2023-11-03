@@ -5,9 +5,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -35,10 +35,11 @@ fun HomeView (list: MutableList<Note>, navController: NavController) {
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
+                modifier = Modifier.height(70.dp),
                 title = {
                     Text(modifier = Modifier.padding(10.dp),
                         text = "My TODO List",
-                        fontSize = 20.sp,
+                        fontSize = 25.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
@@ -77,17 +78,16 @@ fun HomeView (list: MutableList<Note>, navController: NavController) {
 @Composable
 fun ListView(list: MutableList<Note>, navController: NavController) {
     LazyColumn {
-        items(list) { note ->
-            TaskRow(note, list, navController)
+        list.forEach {
+            item { TaskRow(it, navController) }
         }
     }
 }
 
 @Composable
-fun TaskRow(note: Note, list: MutableList<Note>, navController: NavController) {
+fun TaskRow(note: Note, navController: NavController) {
     TextButton(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         onClick = {
             navController.navigate(Screen.NoteView.withArgs(note.id))
         },
@@ -99,6 +99,7 @@ fun TaskRow(note: Note, list: MutableList<Note>, navController: NavController) {
             modifier = Modifier
                 .padding(start = 10.dp, end = 10.dp)
                 .fillMaxWidth(),
+            color = Color.DarkGray,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
             textAlign = TextAlign.Left

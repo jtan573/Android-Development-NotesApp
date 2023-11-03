@@ -48,9 +48,10 @@ fun NewNoteView(list: MutableList<Note>, navController: NavController) {
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
+                modifier = Modifier.height(70.dp),
                 title = { Text(
                     text = "Create New Note",
-                    fontSize = 20.sp,
+                    fontSize = 25.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )},
@@ -96,9 +97,10 @@ fun NewNoteView(list: MutableList<Note>, navController: NavController) {
                             Text(text = "Please enter a valid title.")
                         }
                     }
-                }
+                },
+                isError = isErrorInTitle
             )
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -117,7 +119,8 @@ fun NewNoteView(list: MutableList<Note>, navController: NavController) {
                             Text(text = "Please enter a valid description.")
                         }
                     }
-                }
+                },
+                isError = isErrorInDesc
             )
             Spacer(modifier = Modifier.height(15.dp))
             Row (
